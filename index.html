@@ -1,24 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Open in Browser</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>influbot.ai</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: white; border-radius: 28px; padding: 40px 24px;
+      max-width: 340px; width: 100%; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .logo { font-size: 56px; margin-bottom: 14px; }
+    h1 { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 6px; }
+    .username { color: #667eea; font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .sub { color: #999; font-size: 14px; margin-bottom: 32px; }
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 16px; border-radius: 16px;
+      font-size: 16px; font-weight: 600; cursor: pointer;
+      text-decoration: none; border: none; margin-bottom: 12px;
+    }
+    .btn:active { opacity: 0.8; }
+    .btn-web {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+    .btn-app {
+      background: #f5f5f7;
+      color: #111;
+    }
+    .note { font-size: 11px; color: #ccc; margin-top: 8px; line-height: 1.6; }
+  </style>
 </head>
-<body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;text-align:center;">
+<body>
+<div class="card">
+  <div class="logo">🤖</div>
+  <h1>influbot.ai</h1>
+  <p class="username" id="usernameDisplay"></p>
+  <p class="sub">How would you like to continue?</p>
 
-<div>
-<h2>Open in Browser</h2>
-<p>Instagram blocks payments & video.</p>
-<button onclick="go()" style="padding:18px 30px;font-size:18px;">
-Continue
-</button>
+  <a class="btn btn-web" id="webBtn" href="#">
+    🌐 Open to Web
+  </a>
+
+  <a class="btn btn-app" id="appBtn" href="#">
+    📱 Open to App
+  </a>
+
+  <p class="note">App not installed? We'll take you to the App Store.</p>
 </div>
 
 <script>
-function go(){
-  window.open("https://influbot.ai/joypareek", "_blank");
-}
-</script>
+  // Username URL se nikalo
+  const params = new URLSearchParams(window.location.search);
+  const username = params.get('u')
+    || window.location.pathname.replace('/', '').trim()
+    || '';
 
+  const WEB_URL = `https://dev.influbot.ai/${username}`;
+  // Universal Link — iOS decides: app hai to app, nahi to Safari
+  const UNIVERSAL_URL = `https://dev.influbot.ai/${username}`;
+
+  if (username) {
+    document.getElementById('usernameDisplay').textContent = `@${username}`;
+  }
+
+  // Open to Web — Universal Link as normal https
+  // AASA + applinks claim ki wajah se Safari mein khulega
+  document.getElementById('webBtn').href = WEB_URL;
+  document.getElementById('webBtn').setAttribute('target', '_blank');
+
+  // Open to App — same Universal Link
+  // App installed → App mein khulega
+  // App not installed → App Store / Safari
+  document.getElementById('appBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = UNIVERSAL_URL;
+  });
+</script>
 </body>
 </html>

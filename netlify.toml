@@ -1,7 +1,0 @@
-[build]
-  functions = "netlify/functions"
-
-[[redirects]]
-  from = "/api/telegram"
-  to = "/.netlify/functions/telegram"
-  status = 200
