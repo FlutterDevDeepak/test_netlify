@@ -1,6 +1,7 @@
 export default async (request, context) => {
   const ua = request.headers.get("user-agent") || "";
   const TARGET = "https://influbot.ai/joypareek";
+  const SAFARI_TARGET = TARGET.replace("https://", "x-safari-https://");
 
   const isInstagram = ua.includes("Instagram");
   const isFB = ua.includes("FBAN") || ua.includes("FBAV");
@@ -11,16 +12,12 @@ export default async (request, context) => {
   if (isAndroid && isInApp) {
     const intentUrl = `intent://influbot.ai/joypareek#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(TARGET)};end`;
     const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
-    <title>Opening...</title>
     <script>window.location.href = "${intentUrl}";<\/script>
     </head><body><a href="${intentUrl}">Tap to open</a></body></html>`;
     return new Response(html, { headers: { "Content-Type": "text/html" }});
   }
 
   if (isIOS && isInApp) {
-    // Show a page with a link that uses safari-https:// scheme
-    // This is the only reliable iOS method — user taps once
-    const safariUrl = TARGET.replace("https://", "safari-https://");
     const html = `<!DOCTYPE html>
 <html>
 <head>
@@ -47,7 +44,7 @@ export default async (request, context) => {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white; border-radius: 14px;
       padding: 16px; font-size: 16px; font-weight: 600;
-      text-decoration: none; margin-bottom: 10px;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -55,11 +52,11 @@ export default async (request, context) => {
 <div class="card">
   <h1>🤖 influbot.ai</h1>
   <p>Tap below to open in Safari</p>
-  <a class="btn" href="${safariUrl}">Open in Safari</a>
+  <a class="btn" href="${SAFARI_TARGET}" id="btn">Open in Safari</a>
 </div>
 <script>
-  // Auto attempt on load
-  window.location.href = "${safariUrl}";
+  // x-safari-https:// is the correct iOS URL scheme to force open Safari
+  window.location.href = "${SAFARI_TARGET}";
 </script>
 </body>
 </html>`;
