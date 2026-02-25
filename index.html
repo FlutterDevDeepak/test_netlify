@@ -1,10 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Page</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open in Browser</title>
 </head>
-<body style="text-align:center;margin-top:100px;font-family:sans-serif;">
-  <h2>Netlify Working ✅</h2>
+<body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;text-align:center;">
+
+<div>
+<h2>Open in Browser</h2>
+<p>Instagram blocks payments & video.</p>
+<button onclick="go()" style="padding:18px 30px;font-size:18px;">
+Continue
+</button>
+</div>
+
+<script>
+function go(){
+  window.open("https://influbot.ai/joypareek", "_blank");
+}
+</script>
+
 </body>
 </html>
