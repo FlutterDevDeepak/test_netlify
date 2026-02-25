@@ -1,26 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Opening...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Page</title>
 </head>
-<body>
-  <p>Tap below if it doesn't open automatically</p>
-  <a id="link" href="https://influbot.ai/joypareek">Open in Browser</a>
-
-  <script>
-    const targetUrl = "https://influbot.ai/joypareek";
-
-    // Try Chrome first
-    const chromeUrl = targetUrl.replace(/^https:\/\//, "googlechromes://");
-    
-    // Detect if inside Instagram in-app browser
-    const ua = navigator.userAgent;
-    const isInstagram = ua.indexOf('Instagram') > -1;
-
-    if (isInstagram) {
-      // This forces Safari to open on iOS
-      window.location.href = targetUrl + (targetUrl.includes('?') ? '&' : '?') + 'openExternalBrowser=1';
-    }
-  </script>
+<body style="text-align:center;margin-top:100px;font-family:sans-serif;">
+  <h2>Netlify Working ✅</h2>
 </body>
 </html>
