@@ -1,3 +1,6 @@
+[build]
+  publish = "public"
+
 [[edge_functions]]
-  path = "/"
-  function = "redirect"
+  function = "go"
+  path = "/go/*"

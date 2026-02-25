@@ -1,35 +1,84 @@
 export default async (request, context) => {
-  const TARGET = "https://influbot.ai/joypareek";
+  const url = new URL(request.url);
+  const username = url.pathname.split("/go/")[1];
+
+  const target = `https://redirecttestnew.netlify.app/${username}`;
   const ua = request.headers.get("user-agent") || "";
-  const isIOS = /iphone|ipad|ipod/i.test(ua);
 
-  if (isIOS) {
-    // Serve as a calendar file — iOS hands .ics to Calendar app
-    // which breaks out of Instagram webview completely
-    // The URL field in the event opens in Safari
-    const ics = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//influbot//redirect//EN",
-      "BEGIN:VEVENT",
-      "DTSTART:20260101T000000Z",
-      "DTEND:20260101T010000Z",
-      "SUMMARY:Open influbot.ai",
-      "URL:" + TARGET,
-      "DESCRIPTION:" + TARGET,
-      "END:VEVENT",
-      "END:VCALENDAR"
-    ].join("\r\n");
+  const isInstagram = ua.includes("Instagram");
 
-    return new Response(ics, {
-      headers: {
-        "Content-Type": "text/calendar; charset=utf-8",
-        "Content-Disposition": 'attachment; filename="open.ics"',
-      }
-    });
+  if (!isInstagram) {
+    return Response.redirect(target, 302);
   }
 
-  return Response.redirect(TARGET, 302);
-};
+  // Instagram detected → serve gateway HTML
+  return new Response(`
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opening...</title>
+    <style>
+      body {
+        margin:0;
+        height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-family:sans-serif;
+        text-align:center;
+      }
+      button {
+        margin-top:20px;
+        padding:15px 25px;
+        font-size:16px;
+        border-radius:8px;
+        border:none;
+        background:black;
+        color:white;
+      }
+    </style>
+  </head>
+  <body>
 
-export const config = { path: "/go" };
+  <div>
+    <h2>Tap to Continue</h2>
+    <button onclick="openNow()">Open Chat</button>
+  </div>
+
+  <script>
+    const TARGET = "${target}";
+
+    function openNow() {
+      const ua = navigator.userAgent;
+
+      if (/iPhone|iPad|iPod/i.test(ua)) {
+        window.location = "x-safari-" + TARGET;
+        setTimeout(() => {
+          window.open(TARGET, "_blank");
+        }, 800);
+      } 
+      else if (/Android/i.test(ua)) {
+        const clean = TARGET.replace("https://", "");
+        window.location =
+          "intent://" +
+          clean +
+          "#Intent;scheme=https;package=com.android.chrome;end";
+      }
+      else {
+        window.location = TARGET;
+      }
+    }
+
+    document.body.addEventListener("click", function handler(){
+      openNow();
+      document.body.removeEventListener("click", handler);
+    });
+  </script>
+
+  </body>
+  </html>
+  `, {
+    headers: { "content-type": "text/html" }
+  });
+};
