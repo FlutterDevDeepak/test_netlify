@@ -1,6 +1,7 @@
 [build]
-  publish = "."
+  functions = "netlify/functions"
 
-[[edge_functions]]
-  function = "go"
-  path = "/go/*"
+[[redirects]]
+  from = "/api/telegram"
+  to = "/.netlify/functions/telegram"
+  status = 200
