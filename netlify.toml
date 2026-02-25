@@ -3,5 +3,5 @@
   function = "redirect"
 
 [[edge_functions]]
-  path = "go"
+  path = "/go"
   function = "go"
