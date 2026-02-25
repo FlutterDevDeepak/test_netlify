@@ -4,19 +4,27 @@ export default async (request, context) => {
   const isIOS = /iphone|ipad|ipod/i.test(ua);
 
   if (isIOS) {
-    const html = `<!DOCTYPE html><html><head>
-    <meta charset="UTF-8"/>
-    <meta http-equiv="refresh" content="0;url=${TARGET}"/>
-    <title>Redirecting...</title>
-    </head><body>
-    <p>Opening <a href="${TARGET}">influbot.ai</a>...</p>
-    </body></html>`;
+    // Serve as a calendar file — iOS hands .ics to Calendar app
+    // which breaks out of Instagram webview completely
+    // The URL field in the event opens in Safari
+    const ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//influbot//redirect//EN",
+      "BEGIN:VEVENT",
+      "DTSTART:20260101T000000Z",
+      "DTEND:20260101T010000Z",
+      "SUMMARY:Open influbot.ai",
+      "URL:" + TARGET,
+      "DESCRIPTION:" + TARGET,
+      "END:VEVENT",
+      "END:VCALENDAR"
+    ].join("\r\n");
 
-    return new Response(html, {
+    return new Response(ics, {
       headers: {
-        "Content-Type": "application/octet-stream",
-        "Content-Disposition": 'attachment; filename="open.html"',
-        "X-Content-Type-Options": "nosniff",
+        "Content-Type": "text/calendar; charset=utf-8",
+        "Content-Disposition": 'attachment; filename="open.ics"',
       }
     });
   }
