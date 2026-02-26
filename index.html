@@ -4,80 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Redirecting...</title>
-  <style>
-    body {
-      font-family: -apple-system, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background: #f0f0f0;
-      text-align: center;
-    }
-    .box {
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    h2 { color: #333; }
-    p { color: #666; font-size: 14px; }
-    button {
-      margin-top: 16px;
-      padding: 12px 24px;
-      background: #0095f6;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
 
-<div class="box">
-  <h2>Opening in Safari...</h2>
-  <p id="msg">Please wait</p>
-  <button onclick="tryOpen()" id="btn" style="display:none">
-    Open in Safari
-  </button>
-</div>
-
 <script>
-  var targetURL = window.location.href;
   var ua = navigator.userAgent;
   var isInstagram = ua.indexOf('Instagram') > -1;
-
-  function tryOpen() {
-    // Method 1: openExternalBrowser (works on some versions)
-    window.location.href = targetURL + 
-      (targetURL.indexOf('?') > -1 ? '&' : '?') + 
-      'openExternalBrowser=1';
-
-    // Method 2: Fallback after 1 second
-    setTimeout(function() {
-      window.location.href = targetURL.replace('https://', 'safari-https://');
-    }, 1000);
-  }
+  var finalURL = 'https://redirecttestnew.netlify.app' + window.location.pathname + window.location.search;
 
   if (isInstagram) {
-    document.getElementById('msg').innerText = 
-      'Instagram browser detected. Redirecting to Safari...';
-    
-    // Auto try
-    setTimeout(function() {
-      document.getElementById('btn').style.display = 'inline-block';
-      document.getElementById('msg').innerText = 
-        'Auto redirect failed. Tap button below 👇';
-    }, 500);
+    // Method 1: safari-https scheme
+    window.location.replace(finalURL.replace('https://', 'safari-https://'));
 
-    tryOpen();
-  } else {
-    document.getElementById('msg').innerText = 
-      'You are already in Safari ✅';
-    document.querySelector('h2').innerText = 'All Good!';
+    // Method 2: Fallback - openExternalBrowser
+    setTimeout(function() {
+      window.location.replace(
+        finalURL + (finalURL.indexOf('?') > -1 ? '&' : '?') + 'openExternalBrowser=1'
+      );
+    }, 500);
   }
 </script>
 
