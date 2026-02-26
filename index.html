@@ -1,90 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>influbot.ai</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting...</title>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      padding: 20px;
+      font-family: -apple-system, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f0f0f0;
+      text-align: center;
     }
-    .card {
-      background: white; border-radius: 28px; padding: 40px 24px;
-      max-width: 340px; width: 100%; text-align: center;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
-    .logo { font-size: 56px; margin-bottom: 14px; }
-    h1 { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 6px; }
-    .username { color: #667eea; font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-    .sub { color: #999; font-size: 14px; margin-bottom: 32px; }
-    .btn {
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      width: 100%; padding: 16px; border-radius: 16px;
-      font-size: 16px; font-weight: 600; cursor: pointer;
-      text-decoration: none; border: none; margin-bottom: 12px;
-    }
-    .btn:active { opacity: 0.8; }
-    .btn-web {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+    h2 { color: #333; }
+    p { color: #666; font-size: 14px; }
+    button {
+      margin-top: 16px;
+      padding: 12px 24px;
+      background: #0095f6;
       color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
     }
-    .btn-app {
-      background: #f5f5f7;
-      color: #111;
-    }
-    .note { font-size: 11px; color: #ccc; margin-top: 8px; line-height: 1.6; }
   </style>
 </head>
 <body>
-<div class="card">
-  <div class="logo">🤖</div>
-  <h1>influbot.ai</h1>
-  <p class="username" id="usernameDisplay"></p>
-  <p class="sub">How would you like to continue?</p>
 
-  <a class="btn btn-web" id="webBtn" href="#">
-    🌐 Open to Web
-  </a>
-
-  <a class="btn btn-app" id="appBtn" href="#">
-    📱 Open to App
-  </a>
-
-  <p class="note">App not installed? We'll take you to the App Store.</p>
+<div class="box">
+  <h2>Opening in Safari...</h2>
+  <p id="msg">Please wait</p>
+  <button onclick="tryOpen()" id="btn" style="display:none">
+    Open in Safari
+  </button>
 </div>
 
 <script>
-  // Username URL se nikalo
-  const params = new URLSearchParams(window.location.search);
-  const username = params.get('u')
-    || window.location.pathname.replace('/', '').trim()
-    || '';
+  var targetURL = window.location.href;
+  var ua = navigator.userAgent;
+  var isInstagram = ua.indexOf('Instagram') > -1;
 
-  const WEB_URL = `https://dev.influbot.ai/${username}`;
-  // Universal Link — iOS decides: app hai to app, nahi to Safari
-  const UNIVERSAL_URL = `https://dev.influbot.ai/${username}`;
+  function tryOpen() {
+    // Method 1: openExternalBrowser (works on some versions)
+    window.location.href = targetURL + 
+      (targetURL.indexOf('?') > -1 ? '&' : '?') + 
+      'openExternalBrowser=1';
 
-  if (username) {
-    document.getElementById('usernameDisplay').textContent = `@${username}`;
+    // Method 2: Fallback after 1 second
+    setTimeout(function() {
+      window.location.href = targetURL.replace('https://', 'safari-https://');
+    }, 1000);
   }
 
-  // Open to Web — Universal Link as normal https
-  // AASA + applinks claim ki wajah se Safari mein khulega
-  document.getElementById('webBtn').href = WEB_URL;
-  document.getElementById('webBtn').setAttribute('target', '_blank');
+  if (isInstagram) {
+    document.getElementById('msg').innerText = 
+      'Instagram browser detected. Redirecting to Safari...';
+    
+    // Auto try
+    setTimeout(function() {
+      document.getElementById('btn').style.display = 'inline-block';
+      document.getElementById('msg').innerText = 
+        'Auto redirect failed. Tap button below 👇';
+    }, 500);
 
-  // Open to App — same Universal Link
-  // App installed → App mein khulega
-  // App not installed → App Store / Safari
-  document.getElementById('appBtn').addEventListener('click', (e) => {
-    e.preventDefault();
-    window.location.href = UNIVERSAL_URL;
-  });
+    tryOpen();
+  } else {
+    document.getElementById('msg').innerText = 
+      'You are already in Safari ✅';
+    document.querySelector('h2').innerText = 'All Good!';
+  }
 </script>
+
 </body>
 </html>
