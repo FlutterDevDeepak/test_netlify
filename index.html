@@ -3,27 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Redirecting...</title>
+  <title>Test Page</title>
+  <script
+    id="iar"
+    src="https://rum.auditzy.com/NHeDmCvt-influbot.ai-iar.js"
+    async
+  ></script>
 </head>
 <body>
-
-<script>
-  var ua = navigator.userAgent;
-  var isInstagram = ua.indexOf('Instagram') > -1;
-  var finalURL = 'https://redirecttestnew.netlify.app' + window.location.pathname + window.location.search;
-
-  if (isInstagram) {
-    // Method 1: safari-https scheme
-    window.location.replace(finalURL.replace('https://', 'safari-https://'));
-
-    // Method 2: Fallback - openExternalBrowser
-    setTimeout(function() {
-      window.location.replace(
-        finalURL + (finalURL.indexOf('?') > -1 ? '&' : '?') + 'openExternalBrowser=1'
-      );
-    }, 500);
-  }
-</script>
-
+  <h1>Hello from Safari! ✅</h1>
+  <p>Agar yeh Safari mein dikh raha hai to redirect kaam kar raha hai.</p>
 </body>
 </html>
